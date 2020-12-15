@@ -8,10 +8,13 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.mytrivia.ui.HomeFragment"
-        android:label="HomeFragment" >
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_questionFragment"
-            app:destination="@id/questionFragment" />
+            app:destination="@id/questionFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/questionFragment"
@@ -24,6 +27,8 @@
             android:defaultValue="0L" />
         <action
             android:id="@+id/action_questionFragment_to_homeFragment4"
-            app:popUpTo="@id/homeFragment" />
+            app:enterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpToInclusive="false" />
     </fragment>
 </navigation>

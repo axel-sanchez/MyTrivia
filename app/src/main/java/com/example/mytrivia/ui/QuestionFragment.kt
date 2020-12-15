@@ -34,11 +34,18 @@ class QuestionFragment: BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val idQuestion = QuestionFragmentArgs.fromBundle(requireArguments()).idQuestion
+        //val idQuestion = QuestionFragmentArgs.fromBundle(requireArguments()).idQuestion
+        val idQuestion = 1L
 
         lifecycleScope.launch {
             viewModel.getQuestion(idQuestion)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

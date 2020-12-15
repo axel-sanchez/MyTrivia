@@ -31,6 +31,7 @@ class HomeUseCase : KoinComponent {
                 } else {
                     val newQuestions = api.getQuestions(category, difficulty, type)
                     newQuestions.value?.let {
+                        if(it.isEmpty()) return null
                         val randomNum = Random().nextInt(it.size)
                         addToDB(it)
                         return it[randomNum]

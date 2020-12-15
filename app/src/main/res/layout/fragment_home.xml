@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <Button
         android:id="@+id/easy"
@@ -76,18 +77,34 @@
         app:layout_constraintBottom_toTopOf="@id/start"
         android:textColor="@android:color/black"
         android:gravity="center_horizontal"
-        android:background="@drawable/buttom_home"/>
+        android:background="@drawable/buttom_home" />
 
-    <Button
+    <FrameLayout
         android:id="@+id/start"
-        android:layout_width="125dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/start"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/category"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:textColor="@android:color/black"
-        android:background="@drawable/buttom_home" />
+        app:layout_constraintBottom_toBottomOf="parent">
+        <!--Establecimiento-->
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:text="@string/start"
+            android:textColor="@android:color/black"
+            android:background="@drawable/buttom_home" />
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/progress"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/loading_color"
+            app:lottie_repeatMode="restart" />
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

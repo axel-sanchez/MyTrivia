@@ -50,9 +50,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    // Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:2.3.2"
-    implementation "androidx.navigation:navigation-ui-ktx:2.3.2"
+    //Navigation
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.2.2'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.2.2'
 
     // Koin for Kotlin apps
     implementation "org.koin:koin-core:1.0.1"
@@ -83,4 +83,7 @@ dependencies {
     //Room
     implementation 'androidx.room:room-ktx:2.2.5'
     kapt "androidx.room:room-compiler:2.2.5"
+
+    //Animations
+    implementation 'com.airbnb.android:lottie:2.5.4'
 }

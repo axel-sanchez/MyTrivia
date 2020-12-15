@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.example.mytrivia.R
 import com.example.mytrivia.data.models.Response
@@ -113,8 +114,11 @@ class HomeFragment: BaseFragment() {
             difficultly = HARD
         }
 
-        binding.start.setOnClickListener {
+        binding.btnStart.setOnClickListener {
             if(category != 0 && difficultly != "" && type != ""){
+                binding.btnStart.disable()
+                binding.progress.show()
+                binding.progress.playAnimation()
                 lifecycleScope.launch {
                     viewModel.getQuestion(category, difficultly, type)
                 }
@@ -130,9 +134,14 @@ class HomeFragment: BaseFragment() {
 
     private fun setUpViewModel() {
         val myObserver = Observer<Response.Question?> {
+            binding.progress.cancelAnimation()
+            binding.progress.hide()
             it?.let {
                 val action = HomeFragmentDirections.actionHomeFragmentToQuestionFragment(it.id)
                 findNavController().navigate(action)
+            }?: kotlin.run {
+                Toast.makeText(requireContext(), "No questions found", Toast.LENGTH_SHORT).show()
+                binding.btnStart.enable()
             }
         }
         viewModel.getQuestionLiveData().observe(viewLifecycleOwner, myObserver)
