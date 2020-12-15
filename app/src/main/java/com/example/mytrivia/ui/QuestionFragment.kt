@@ -81,7 +81,6 @@ class QuestionFragment: BaseFragment() {
                         if(optionOne.text == it.correct_answer) optionOne.setBackgroundColor(resources.getColor(R.color.green))
                         else optionOne.setBackgroundColor(resources.getColor(R.color.red))
 
-                        //optionOne.disable()
                         optionTwo.disable()
                         optionThree.disable()
                         optionFour.disable()
@@ -92,7 +91,6 @@ class QuestionFragment: BaseFragment() {
                         else optionTwo.setBackgroundColor(resources.getColor(R.color.red))
 
                         optionOne.disable()
-                        //optionTwo.disable()
                         optionThree.disable()
                         optionFour.disable()
                     }
@@ -103,7 +101,6 @@ class QuestionFragment: BaseFragment() {
 
                         optionOne.disable()
                         optionTwo.disable()
-                        //optionThree.disable()
                         optionFour.disable()
                     }
                     optionFour.setOnClickListener { _ ->
@@ -113,7 +110,6 @@ class QuestionFragment: BaseFragment() {
                         optionOne.disable()
                         optionTwo.disable()
                         optionThree.disable()
-                        //optionFour.disable()
                     }
 
                     ///////////////////////////////////

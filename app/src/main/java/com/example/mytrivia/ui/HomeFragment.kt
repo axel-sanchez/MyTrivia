@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
@@ -113,8 +114,12 @@ class HomeFragment: BaseFragment() {
         }
 
         binding.start.setOnClickListener {
-            lifecycleScope.launch {
-                viewModel.getQuestion(category, difficultly, type)
+            if(category != 0 && difficultly != "" && type != ""){
+                lifecycleScope.launch {
+                    viewModel.getQuestion(category, difficultly, type)
+                }
+            } else{
+                Toast.makeText(requireContext(), "Please, select all fields", Toast.LENGTH_SHORT).show()
             }
         }
 
