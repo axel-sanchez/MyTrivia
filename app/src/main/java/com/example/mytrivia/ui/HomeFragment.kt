@@ -45,6 +45,7 @@ import com.example.mytrivia.helpers.Constants.SCIENCE_MATHEMATICS
 import com.example.mytrivia.helpers.Constants.SPORTS
 import com.example.mytrivia.helpers.Constants.TRUE_FALSE
 import com.example.mytrivia.helpers.Constants.VEHICLES
+import com.example.mytrivia.helpers.NetworkHelper
 import com.example.mytrivia.ui.customs.BaseFragment
 import com.example.mytrivia.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
@@ -116,11 +117,15 @@ class HomeFragment: BaseFragment() {
 
         binding.btnStart.setOnClickListener {
             if(category != 0 && difficultly != "" && type != ""){
-                binding.btnStart.disable()
-                binding.progress.show()
-                binding.progress.playAnimation()
-                lifecycleScope.launch {
-                    viewModel.getQuestion(category, difficultly, type)
+                if(NetworkHelper.isOnline(requireContext())){
+                    binding.btnStart.disable()
+                    binding.progress.show()
+                    binding.progress.playAnimation()
+                    lifecycleScope.launch {
+                        viewModel.getQuestion(category, difficultly, type)
+                    }
+                } else{
+                    Toast.makeText(context, "You don't have internet connection", Toast.LENGTH_SHORT).show()
                 }
             } else{
                 Toast.makeText(requireContext(), "Please, select all fields", Toast.LENGTH_SHORT).show()
