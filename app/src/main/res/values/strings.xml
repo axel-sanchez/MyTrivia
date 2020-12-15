@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">MyTrivia</string>
+    <string name="response">Answer</string>
+    <string name="create">Create</string>
+    <string name="my_trivia">My Trivia</string>
+    <string name="category">Category</string>
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+    <string name="start">Start</string>
+    <string name="trueFalse">True / False</string>
+    <string name="multiple_option">Multiple Option</string>
+    <string name="categories">Categories</string>
+    <string name="cancel">Cancel</string>
+
+    <string-array name="categories">
+        <item>Any category</item>
+        <item>General Knowledge</item>
+        <item>Entertainment: Books</item>
+        <item>Entertainment: films</item>
+        <item>Entertainment: music</item>
+        <item>Entertainment: musicals y theatres</item>
+        <item>Entertainment: television</item>
+        <item>Entertainment: video games</item>
+        <item>Entertainment: board games</item>
+        <item>Entertainment: japanese anime and manga</item>
+        <item>Entertainment: cartoon and animations</item>
+        <item>Entertainment: comics</item>
+        <item>Science and nature</item>
+        <item>Science: Computers</item>
+        <item>Science: mathematics</item>
+        <item>Science: gadgets</item>
+        <item>Mythology</item>
+        <item>Sports</item>
+        <item>Geography</item>
+        <item>History</item>
+        <item>Politics</item>
+        <item>Art</item>
+        <item>Celebrities</item>
+        <item>Animals</item>
+        <item>Vehicles</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
