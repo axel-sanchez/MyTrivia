@@ -32,6 +32,6 @@ val moduleApp = module{
         .build() }
     single { HomeUseCase() }
     single { QuestionUseCase() }
-    single { ConnectToApi(androidContext()) }
+    single { ConnectToApi() }
     single { Gson() }
 }

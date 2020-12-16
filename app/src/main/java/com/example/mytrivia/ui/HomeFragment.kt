@@ -82,6 +82,17 @@ class HomeFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        when (difficultly) {
+            EASY -> binding.easy.disable()
+            MEDIUM -> binding.medium.disable()
+            HARD -> binding.hard.disable()
+        }
+
+        when (type) {
+            TRUE_FALSE -> binding.trueFalse.disable()
+            MULTIPLE_CHOICE -> binding.multipleOption.disable()
+        }
+
         binding.trueFalse.setOnClickListener {
             binding.trueFalse.disable()
             binding.multipleOption.enable()

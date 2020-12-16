@@ -14,6 +14,6 @@ interface ApiService {
      * @param [query] búsqueda ingresada
      * @return devuelve un objeto Response (de retrofit) que contiene [MyResponse]
      */
-    @GET("api.php?amount=50")
+    @GET("api.php?amount=10")
     suspend fun getQuestions(@Query("category") category: Int, @Query("difficulty") difficulty: String, @Query("type") type: String): Response<com.example.mytrivia.data.models.Response?>
 }

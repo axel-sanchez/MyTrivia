@@ -17,7 +17,7 @@
         <item>Any category</item>
         <item>General Knowledge</item>
         <item>Entertainment: Books</item>
-        <item>Entertainment: films</item>
+        <item>Entertainment: Film</item>
         <item>Entertainment: music</item>
         <item>Entertainment: musicals y theatres</item>
         <item>Entertainment: television</item>
@@ -40,6 +40,4 @@
         <item>Animals</item>
         <item>Vehicles</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

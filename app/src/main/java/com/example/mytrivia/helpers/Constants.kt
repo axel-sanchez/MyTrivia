@@ -36,4 +36,68 @@ object Constants {
     const val ENTERTAINMENT_MUSICALS_AND_THEATRES = 13
     const val ENTERTAINMENT_MUSIC = 12
     const val ENTERTAINMENT_FILMS = 11
+
+    fun categoryConverterToNumber(stringCategory: String?): String{
+        stringCategory?.let {
+            when(stringCategory){
+                "General Knowledge" -> return GENERAL_KNOWLEDGE.toString()
+                "Entertainment: Books" -> return ENTERTAINMENT_BOOKS.toString()
+                "Entertainment: Film" -> return ENTERTAINMENT_FILMS.toString()
+                "Entertainment: Music" -> return ENTERTAINMENT_MUSIC.toString()
+                "Entertainment: Musicals y Theatres" -> return ENTERTAINMENT_MUSICALS_AND_THEATRES.toString()
+                "Entertainment: Television" -> return ENTERTAINMENT_TELEVISION.toString()
+                "Entertainment: Video Games" -> return ENTERTAINMENT_VIDEO_GAMES.toString()
+                "Entertainment: Board Games" -> return ENTERTAINMENT_BOARD_GAMES.toString()
+                "Entertainment: Japanese Anime & Manga" -> return ENTERTAINMENT_JAPANESE_ANIME_AND_MANGA.toString()
+                "Entertainment: Cartoon & Animations" -> return ENTERTAINMENT_CARTOON_AND_ANIMATIONS.toString()
+                "Entertainment: Comics" -> return ENTERTAINMENT_COMICS.toString()
+                "Science & Nature" -> return SCIENCE_AND_NATURE.toString()
+                "Science: Computers" -> return SCIENCE_COMPUTERS.toString()
+                "Science: Mathematics" -> return SCIENCE_MATHEMATICS.toString()
+                "Science: Gadgets" -> return SCIENCE_GADGETS.toString()
+                "Mythology" -> return MYTHOLOGY.toString()
+                "Sports" -> return SPORTS.toString()
+                "Geography" -> return GEOGRAPHY.toString()
+                "History" -> return HISTORY.toString()
+                "Politics" -> return POLITICS.toString()
+                "Art" -> return ART.toString()
+                "Celebrities" -> return CELEBRITIES.toString()
+                "Animals" -> return ANIMALS.toString()
+                "Vehicles" -> return VEHICLES.toString()
+                else -> return "0"
+            }
+        }?:return ""
+    }
+
+    fun categoryConverterToText(intCategory: Int?): String{
+        intCategory?.let {
+            when(intCategory){
+                GENERAL_KNOWLEDGE -> return "General Knowledge"
+                ENTERTAINMENT_BOOKS -> return "Entertainment: Books"
+                ENTERTAINMENT_FILMS -> return "Entertainment: Film"
+                ENTERTAINMENT_MUSIC -> return "Entertainment: Music"
+                ENTERTAINMENT_MUSICALS_AND_THEATRES -> return "Entertainment: Musicals y Theatres"
+                ENTERTAINMENT_TELEVISION -> return "Entertainment: Television"
+                ENTERTAINMENT_VIDEO_GAMES -> return "Entertainment: Video Games"
+                ENTERTAINMENT_BOARD_GAMES -> return "Entertainment: Board Games"
+                ENTERTAINMENT_JAPANESE_ANIME_AND_MANGA -> return "Entertainment: Japanese Anime & Manga"
+                ENTERTAINMENT_CARTOON_AND_ANIMATIONS -> return "Entertainment: Cartoon & Animations"
+                ENTERTAINMENT_COMICS -> return "Entertainment: Comics"
+                SCIENCE_AND_NATURE -> return "Science & Nature"
+                SCIENCE_COMPUTERS -> return "Science: Computers"
+                SCIENCE_MATHEMATICS -> return "Science: Mathematics"
+                SCIENCE_GADGETS -> return "Science: Gadgets"
+                MYTHOLOGY -> return "Mythology"
+                SPORTS -> return "Sports"
+                GEOGRAPHY -> return "Geography"
+                HISTORY -> return "History"
+                POLITICS -> return "Politics"
+                ART -> return "Art"
+                CELEBRITIES -> return "Celebrities"
+                ANIMALS -> return "Animals"
+                VEHICLES -> return "Vehicles"
+                else -> return ""
+            }
+        }?:return ""
+    }
 }

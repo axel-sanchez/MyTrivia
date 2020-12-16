@@ -34,18 +34,11 @@ class QuestionFragment: BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //val idQuestion = QuestionFragmentArgs.fromBundle(requireArguments()).idQuestion
-        val idQuestion = 1L
+        val idQuestion = QuestionFragmentArgs.fromBundle(requireArguments()).idQuestion
 
         lifecycleScope.launch {
             viewModel.getQuestion(idQuestion)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,7 +74,7 @@ class QuestionFragment: BaseFragment() {
                     }
 
                     binding.questionMultiple.root.show()
-                    category.text = it.category
+                    category.text = Constants.categoryConverterToText(it.category?.toInt())
                     question.text = it.question
 
                     optionOne.setOnClickListener { _ ->
@@ -129,7 +122,7 @@ class QuestionFragment: BaseFragment() {
                     val optionTwo = binding.questionBoolean.root.findViewById<TextView>(R.id.optionTwo)
 
                     binding.questionBoolean.root.show()
-                    category.text = it.category
+                    category.text = Constants.categoryConverterToText(it.category?.toInt())
                     question.text = it.question
 
                     val randomNum = Random().nextInt(2) + 1

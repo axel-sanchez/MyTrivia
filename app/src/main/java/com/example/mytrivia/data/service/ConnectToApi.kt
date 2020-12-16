@@ -17,7 +17,7 @@ const val BASE_URL = "https://opentdb.com/"
  * Esta clase es la encargada de conectarse a la api
  * @author Axel Sanchez
  */
-class ConnectToApi(private val context: Context) : KoinComponent {
+class ConnectToApi : KoinComponent {
     private val service: ApiService by inject()
 
     /**
@@ -25,11 +25,10 @@ class ConnectToApi(private val context: Context) : KoinComponent {
      * @param [query] es la búsqueda
      * @return devuelve un mutableLiveData que contiene un listado de [Product]
      */
-    suspend fun getQuestions(
-        category: Int,
-        difficulty: String,
-        type: String
-    ): MutableLiveData<List<Response.Question?>?> {
+    suspend fun getQuestions(category: Int, difficulty: String, type: String): MutableLiveData<List<Response.Question?>?> {
+        println("category: $category")
+        println("difficulty: $difficulty")
+        println("type: $type")
         val mutableLiveData = MutableLiveData<List<Response.Question?>?>()
         try {
             val response = service.getQuestions(category, difficulty, type)

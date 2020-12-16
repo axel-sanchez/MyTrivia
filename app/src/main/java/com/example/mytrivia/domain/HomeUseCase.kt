@@ -3,7 +3,7 @@ package com.example.mytrivia.domain
 import com.example.mytrivia.data.service.ConnectToApi
 import com.example.mytrivia.data.models.Response
 import com.example.mytrivia.data.room.Database
-import kotlinx.coroutines.coroutineScope
+import com.example.mytrivia.helpers.Constants
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 import java.lang.Exception
@@ -26,7 +26,7 @@ class HomeUseCase : KoinComponent {
             var questions = room.productDao().getQuestions(category)
             questions?.let {
                 if (questions.isNotEmpty()) {
-                    val randomNum = Random().nextInt(100)
+                    val randomNum = Random().nextInt(questions.size)
                     return questions[randomNum]
                 } else {
                     val newQuestions = api.getQuestions(category, difficulty, type)
@@ -47,6 +47,7 @@ class HomeUseCase : KoinComponent {
     private suspend fun addToDB(questions: List<Response.Question?>) {
         for (question in questions) {
             try {
+                question?.category = Constants.categoryConverterToNumber(question?.category)
                 question?.id = room.productDao().insertQuestion(question)
             } catch (e: Exception) {
                 e.printStackTrace()
