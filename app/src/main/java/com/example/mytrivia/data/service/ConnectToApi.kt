@@ -1,15 +1,10 @@
 package com.example.mytrivia.data.service
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.example.mytrivia.data.models.Response
-import com.example.mytrivia.helpers.NetworkHelper
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
-import java.lang.Exception
-import kotlin.coroutines.coroutineContext
 
 const val BASE_URL = "https://opentdb.com/"
 
@@ -26,9 +21,6 @@ class ConnectToApi : KoinComponent {
      * @return devuelve un mutableLiveData que contiene un listado de [Product]
      */
     suspend fun getQuestions(category: Int, difficulty: String, type: String): MutableLiveData<List<Response.Question?>?> {
-        println("category: $category")
-        println("difficulty: $difficulty")
-        println("type: $type")
         val mutableLiveData = MutableLiveData<List<Response.Question?>?>()
         try {
             val response = service.getQuestions(category, difficulty, type)
