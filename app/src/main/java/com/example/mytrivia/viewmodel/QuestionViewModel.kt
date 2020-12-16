@@ -1,11 +1,11 @@
 package com.example.mytrivia.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.mytrivia.data.models.Response
 import com.example.mytrivia.domain.QuestionUseCase
+import com.example.mytrivia.helpers.MutableLiveDataCustom
 
 /**
  * View model de [MyFragment]
@@ -13,7 +13,7 @@ import com.example.mytrivia.domain.QuestionUseCase
  */
 class QuestionViewModel(private val questionUseCase: QuestionUseCase) : ViewModel() {
 
-    private val listData = MutableLiveData<Response.Question?>()
+    private val listData = MutableLiveDataCustom<Response.Question?>()
 
     private fun setListData(question: Response.Question?) {
         listData.postValue(question)
