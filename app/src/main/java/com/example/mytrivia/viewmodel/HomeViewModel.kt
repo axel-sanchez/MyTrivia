@@ -3,9 +3,11 @@ package com.example.mytrivia.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.mytrivia.data.models.Response
 import com.example.mytrivia.domain.HomeUseCase
 import com.example.mytrivia.helpers.MutableLiveDataCustom
+import kotlinx.coroutines.launch
 
 /**
  * View model de [HomeFragment]
@@ -19,19 +21,16 @@ class HomeViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
         listData.postValue(question)
     }
 
-    suspend fun getQuestion(category: Int, difficulty: String, type: String) {
-        setListData(homeUseCase.getQuestion(category, difficulty, type))
+    fun getQuestion(category: Int, difficulty: String, type: String) {
+        viewModelScope.launch {
+            setListData(homeUseCase.getQuestion(category, difficulty, type))
+        }
     }
 
     fun getQuestionLiveData(): LiveData<Response.Question?> {
         return listData
     }
 
-    /**
-     * Factory of [HomeViewModel]
-     * @param [homeUseCase]
-     * @author Axel Sanchez
-     */
     class HomeViewModelFactory(private val homeUseCase: HomeUseCase) : ViewModelProvider.Factory {
 
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {

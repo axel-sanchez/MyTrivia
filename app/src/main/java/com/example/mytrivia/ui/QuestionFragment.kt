@@ -6,12 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import com.example.mytrivia.R
 import com.example.mytrivia.data.models.Response
 import com.example.mytrivia.databinding.FragmentQuestionBinding
+import com.example.mytrivia.domain.QuestionUseCase
 import com.example.mytrivia.helpers.Constants
 import com.example.mytrivia.ui.customs.BaseFragment
 import com.example.mytrivia.viewmodel.QuestionViewModel
@@ -23,22 +25,19 @@ import java.util.*
  * A simple [Fragment] subclass.
  * @author Axel Sanchez
  */
-class QuestionFragment: BaseFragment() {
+class QuestionFragment : BaseFragment() {
 
-    private val viewModelFactory: QuestionViewModel.QuestionViewModelFactory by inject()
-    private val viewModel: QuestionViewModel by lazy {
-        ViewModelProviders.of(requireActivity(), viewModelFactory)
-            .get(QuestionViewModel::class.java)
-    }
+    private val questionUseCase: QuestionUseCase by inject()
+    private val viewModel: QuestionViewModel by viewModels(
+        factoryProducer = { QuestionViewModel.QuestionViewModelFactory(questionUseCase, idQuestion) }
+    )
+
+    private var idQuestion = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val idQuestion = QuestionFragmentArgs.fromBundle(requireArguments()).idQuestion
-
-        lifecycleScope.launch {
-            viewModel.getQuestion(idQuestion)
-        }
+        idQuestion = QuestionFragmentArgs.fromBundle(requireArguments()).idQuestion
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,20 +51,31 @@ class QuestionFragment: BaseFragment() {
 
             it?.let {
 
-                if(it.type == Constants.MULTIPLE_CHOICE){
+                if (it.type == Constants.MULTIPLE_CHOICE.valueString) {
 
-                    val category = binding.questionMultiple.root.findViewById<TextView>(R.id.category)
-                    val question = binding.questionMultiple.root.findViewById<TextView>(R.id.question)
-                    val optionOne = binding.questionMultiple.root.findViewById<TextView>(R.id.optionOne)
-                    val optionTwo = binding.questionMultiple.root.findViewById<TextView>(R.id.optionTwo)
-                    val optionThree = binding.questionMultiple.root.findViewById<TextView>(R.id.optionThree)
-                    val optionFour = binding.questionMultiple.root.findViewById<TextView>(R.id.optionFour)
+                    val category =
+                        binding.questionMultiple.root.findViewById<TextView>(R.id.category)
+                    val question =
+                        binding.questionMultiple.root.findViewById<TextView>(R.id.question)
+                    val optionOne =
+                        binding.questionMultiple.root.findViewById<TextView>(R.id.optionOne)
+                    val optionTwo =
+                        binding.questionMultiple.root.findViewById<TextView>(R.id.optionTwo)
+                    val optionThree =
+                        binding.questionMultiple.root.findViewById<TextView>(R.id.optionThree)
+                    val optionFour =
+                        binding.questionMultiple.root.findViewById<TextView>(R.id.optionFour)
 
-                    val answers = mutableListOf(it.correct_answer?:"", it.incorrect_answers?.get(0)?:"", it.incorrect_answers?.get(1)?:"", it.incorrect_answers?.get(2)?:"")
+                    val answers = mutableListOf(
+                        it.correct_answer ?: "",
+                        it.incorrect_answers?.get(0) ?: "",
+                        it.incorrect_answers?.get(1) ?: "",
+                        it.incorrect_answers?.get(2) ?: ""
+                    )
                     answers.shuffle()
 
-                    for(i in 0..3){
-                        when(i){
+                    for (i in 0..3) {
+                        when (i) {
                             0 -> optionOne.text = answers[i]
                             1 -> optionTwo.text = answers[i]
                             2 -> optionThree.text = answers[i]
@@ -74,11 +84,13 @@ class QuestionFragment: BaseFragment() {
                     }
 
                     binding.questionMultiple.root.show()
-                    category.text = Constants.categoryConverterToText(it.category?.toInt())
+                    category.text = getCategoryStringValue(it.category)
                     question.text = it.question
 
                     optionOne.setOnClickListener { _ ->
-                        if(optionOne.text == it.correct_answer) optionOne.setBackgroundColor(resources.getColor(R.color.green))
+                        if (optionOne.text == it.correct_answer) optionOne.setBackgroundColor(
+                            resources.getColor(R.color.green)
+                        )
                         else optionOne.setBackgroundColor(resources.getColor(R.color.red))
 
                         optionTwo.disable()
@@ -87,7 +99,9 @@ class QuestionFragment: BaseFragment() {
                     }
 
                     optionTwo.setOnClickListener { _ ->
-                        if(optionTwo.text == it.correct_answer) optionTwo.setBackgroundColor(resources.getColor(R.color.green))
+                        if (optionTwo.text == it.correct_answer) optionTwo.setBackgroundColor(
+                            resources.getColor(R.color.green)
+                        )
                         else optionTwo.setBackgroundColor(resources.getColor(R.color.red))
 
                         optionOne.disable()
@@ -96,7 +110,9 @@ class QuestionFragment: BaseFragment() {
                     }
 
                     optionThree.setOnClickListener { _ ->
-                        if(optionThree.text == it.correct_answer) optionThree.setBackgroundColor(resources.getColor(R.color.green))
+                        if (optionThree.text == it.correct_answer) optionThree.setBackgroundColor(
+                            resources.getColor(R.color.green)
+                        )
                         else optionThree.setBackgroundColor(resources.getColor(R.color.red))
 
                         optionOne.disable()
@@ -104,7 +120,9 @@ class QuestionFragment: BaseFragment() {
                         optionFour.disable()
                     }
                     optionFour.setOnClickListener { _ ->
-                        if(optionFour.text == it.correct_answer) optionFour.setBackgroundColor(resources.getColor(R.color.green))
+                        if (optionFour.text == it.correct_answer) optionFour.setBackgroundColor(
+                            resources.getColor(R.color.green)
+                        )
                         else optionFour.setBackgroundColor(resources.getColor(R.color.red))
 
                         optionOne.disable()
@@ -114,37 +132,44 @@ class QuestionFragment: BaseFragment() {
 
                     ///////////////////////////////////
                     binding.questionBoolean.root.hide()
-                } else{
+                } else {
 
-                    val category = binding.questionBoolean.root.findViewById<TextView>(R.id.category)
-                    val question = binding.questionBoolean.root.findViewById<TextView>(R.id.question)
-                    val optionOne = binding.questionBoolean.root.findViewById<TextView>(R.id.optionOne)
-                    val optionTwo = binding.questionBoolean.root.findViewById<TextView>(R.id.optionTwo)
+                    val category =
+                        binding.questionBoolean.root.findViewById<TextView>(R.id.category)
+                    val question =
+                        binding.questionBoolean.root.findViewById<TextView>(R.id.question)
+                    val optionOne =
+                        binding.questionBoolean.root.findViewById<TextView>(R.id.optionOne)
+                    val optionTwo =
+                        binding.questionBoolean.root.findViewById<TextView>(R.id.optionTwo)
 
                     binding.questionBoolean.root.show()
-                    category.text = Constants.categoryConverterToText(it.category?.toInt())
+                    category.text = getCategoryStringValue(it.category)
                     question.text = it.question
 
                     val randomNum = Random().nextInt(2) + 1
 
-                    if(randomNum == 1){
-                        optionOne.text = it.correct_answer?:""
-                        optionTwo.text = it.incorrect_answers?.firstOrNull()?:""
-                    } else{
-                        optionOne.text = it.incorrect_answers?.firstOrNull()?:""
-                        optionTwo.text = it.correct_answer?:""
+                    if (randomNum == 1) {
+                        optionOne.text = it.correct_answer ?: ""
+                        optionTwo.text = it.incorrect_answers?.firstOrNull() ?: ""
+                    } else {
+                        optionOne.text = it.incorrect_answers?.firstOrNull() ?: ""
+                        optionTwo.text = it.correct_answer ?: ""
                     }
 
                     optionOne.setOnClickListener { _ ->
-                        if(optionOne.text == it.correct_answer) optionOne.setBackgroundColor(resources.getColor(R.color.green))
+                        if (optionOne.text == it.correct_answer) optionOne.setBackgroundColor(
+                            resources.getColor(R.color.green)
+                        )
                         else optionOne.setBackgroundColor(resources.getColor(R.color.red))
                     }
 
                     optionTwo.setOnClickListener { _ ->
-                        if(optionTwo.text == it.correct_answer) optionTwo.setBackgroundColor(resources.getColor(R.color.green))
+                        if (optionTwo.text == it.correct_answer) optionTwo.setBackgroundColor(
+                            resources.getColor(R.color.green)
+                        )
                         else optionTwo.setBackgroundColor(resources.getColor(R.color.red))
                     }
-
 
                     /////////////////////////////////////
                     binding.questionMultiple.root.hide()
@@ -155,10 +180,23 @@ class QuestionFragment: BaseFragment() {
         viewModel.getQuestionLiveData().observe(viewLifecycleOwner, myObserver)
     }
 
+    private fun getCategoryStringValue(category: String?): String {
+        val categoriesEnumList = Constants.values()
+        val foundedCategory = categoriesEnumList.firstOrNull { it.valueString == category ?: "" }
+        foundedCategory?.let {
+            return it.valueString
+        }
+        return ""
+    }
+
     private var fragmentQuestionBinding: FragmentQuestionBinding? = null
     private val binding get() = fragmentQuestionBinding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         fragmentQuestionBinding = FragmentQuestionBinding.inflate(inflater, container, false)
         return binding.root
     }

@@ -1,5 +1,6 @@
 package com.example.mytrivia.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,52 +9,23 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
-import androidx.lifecycle.Observer
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.mytrivia.R
-import com.example.mytrivia.data.models.Response
 import com.example.mytrivia.databinding.FragmentHomeBinding
-import com.example.mytrivia.helpers.Constants.ANIMALS
-import com.example.mytrivia.helpers.Constants.ART
-import com.example.mytrivia.helpers.Constants.CELEBRITIES
-import com.example.mytrivia.helpers.Constants.EASY
-import com.example.mytrivia.helpers.Constants.ENTERTAINMENT_BOARD_GAMES
-import com.example.mytrivia.helpers.Constants.ENTERTAINMENT_BOOKS
-import com.example.mytrivia.helpers.Constants.ENTERTAINMENT_CARTOON_AND_ANIMATIONS
-import com.example.mytrivia.helpers.Constants.ENTERTAINMENT_COMICS
-import com.example.mytrivia.helpers.Constants.ENTERTAINMENT_FILMS
-import com.example.mytrivia.helpers.Constants.ENTERTAINMENT_JAPANESE_ANIME_AND_MANGA
-import com.example.mytrivia.helpers.Constants.ENTERTAINMENT_MUSIC
-import com.example.mytrivia.helpers.Constants.ENTERTAINMENT_MUSICALS_AND_THEATRES
-import com.example.mytrivia.helpers.Constants.ENTERTAINMENT_TELEVISION
-import com.example.mytrivia.helpers.Constants.ENTERTAINMENT_VIDEO_GAMES
-import com.example.mytrivia.helpers.Constants.GENERAL_KNOWLEDGE
-import com.example.mytrivia.helpers.Constants.GEOGRAPHY
-import com.example.mytrivia.helpers.Constants.HARD
-import com.example.mytrivia.helpers.Constants.HISTORY
-import com.example.mytrivia.helpers.Constants.MEDIUM
-import com.example.mytrivia.helpers.Constants.MULTIPLE_CHOICE
-import com.example.mytrivia.helpers.Constants.MYTHOLOGY
-import com.example.mytrivia.helpers.Constants.POLITICS
-import com.example.mytrivia.helpers.Constants.SCIENCE_AND_NATURE
-import com.example.mytrivia.helpers.Constants.SCIENCE_COMPUTERS
-import com.example.mytrivia.helpers.Constants.SCIENCE_GADGETS
-import com.example.mytrivia.helpers.Constants.SCIENCE_MATHEMATICS
-import com.example.mytrivia.helpers.Constants.SPORTS
-import com.example.mytrivia.helpers.Constants.TRUE_FALSE
-import com.example.mytrivia.helpers.Constants.VEHICLES
+import com.example.mytrivia.domain.HomeUseCase
+import com.example.mytrivia.helpers.Constants.*
 import com.example.mytrivia.helpers.NetworkHelper
 import com.example.mytrivia.ui.customs.BaseFragment
 import com.example.mytrivia.viewmodel.HomeViewModel
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 /**
  * @author Axel Sanchez
  */
-class HomeFragment: BaseFragment() {
+class HomeFragment : BaseFragment() {
 
     var category = 0
     var difficultly = ""
@@ -62,11 +34,10 @@ class HomeFragment: BaseFragment() {
     private var fragmentMyBinding: FragmentHomeBinding? = null
     private val binding get() = fragmentMyBinding!!
 
-    private val viewModelFactory: HomeViewModel.HomeViewModelFactory by inject()
-    private val viewModel: HomeViewModel by lazy {
-        ViewModelProviders.of(requireActivity(), viewModelFactory)
-            .get(HomeViewModel::class.java)
-    }
+    private val homeUseCase: HomeUseCase by inject()
+    private val viewModel: HomeViewModel by viewModels(
+        factoryProducer = { HomeViewModel.HomeViewModelFactory(homeUseCase) }
+    )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         fragmentMyBinding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -78,122 +49,126 @@ class HomeFragment: BaseFragment() {
         fragmentMyBinding = null
     }
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         when (difficultly) {
-            EASY -> binding.easy.disable()
-            MEDIUM -> binding.medium.disable()
-            HARD -> binding.hard.disable()
+            EASY.valueString -> {
+                binding.easy.disable()
+            }
+            MEDIUM.valueString -> {
+                binding.medium.disable()
+            }
+            HARD.valueString -> {
+                binding.hard.disable()
+            }
         }
 
         when (type) {
-            TRUE_FALSE -> binding.trueFalse.disable()
-            MULTIPLE_CHOICE -> binding.multipleOption.disable()
+            TRUE_FALSE.valueString -> binding.trueFalse.disable()
+            MULTIPLE_CHOICE.valueString -> binding.multipleOption.disable()
         }
 
         binding.trueFalse.setOnClickListener {
             binding.trueFalse.disable()
             binding.multipleOption.enable()
-            type = TRUE_FALSE
+            type = TRUE_FALSE.valueString
         }
 
         binding.multipleOption.setOnClickListener {
             binding.multipleOption.disable()
             binding.trueFalse.enable()
-            type = MULTIPLE_CHOICE
+            type = MULTIPLE_CHOICE.valueString
         }
 
         binding.easy.setOnClickListener {
             binding.easy.disable()
             binding.hard.enable()
             binding.medium.enable()
-            difficultly = EASY
+            difficultly = EASY.valueString
         }
 
         binding.medium.setOnClickListener {
             binding.medium.disable()
             binding.easy.enable()
             binding.hard.enable()
-            difficultly = MEDIUM
+            difficultly = MEDIUM.valueString
         }
 
         binding.hard.setOnClickListener {
             binding.hard.disable()
             binding.easy.enable()
             binding.medium.enable()
-            difficultly = HARD
+            difficultly = HARD.valueString
         }
 
         binding.btnStart.setOnClickListener {
-            if(category != 0 && difficultly != "" && type != ""){
-                if(NetworkHelper.isOnline(requireContext())){
+            if (category != 0 && difficultly != "" && type != "") {
+                if (NetworkHelper.isOnline(requireContext())) {
                     binding.btnStart.disable()
                     binding.progress.show()
                     binding.progress.playAnimation()
-                    lifecycleScope.launch {
-                        viewModel.getQuestion(category, difficultly, type)
-                    }
-                } else{
+                    viewModel.getQuestion(category, difficultly, type)
+                } else {
                     Toast.makeText(context, "You don't have internet connection", Toast.LENGTH_SHORT).show()
                 }
-            } else{
+            } else {
                 Toast.makeText(requireContext(), "Please, select all fields", Toast.LENGTH_SHORT).show()
             }
         }
 
         setUpViewModel()
 
-        adapterCategories()
+        adapterCategoriesSpinner()
     }
 
     private fun setUpViewModel() {
-        val myObserver = Observer<Response.Question?> {
+        viewModel.getQuestionLiveData().observe(viewLifecycleOwner, {
             binding.progress.cancelAnimation()
             binding.progress.hide()
             it?.let {
                 val action = HomeFragmentDirections.actionHomeFragmentToQuestionFragment(it.id)
                 findNavController().navigate(action)
-            }?: kotlin.run {
+            } ?: kotlin.run {
                 Toast.makeText(requireContext(), "No questions found", Toast.LENGTH_SHORT).show()
                 binding.btnStart.enable()
             }
-        }
-        viewModel.getQuestionLiveData().observe(viewLifecycleOwner, myObserver)
+        })
     }
 
-    private fun adapterCategories() {
+    private fun adapterCategoriesSpinner() {
         val spinner: Spinner = binding.category
         val adapter = ArrayAdapter.createFromResource(requireContext(), R.array.categories, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
-        spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                when(parent?.getItemAtPosition(position)?.toString()?:""){
-                    "General Knowledge" -> category = GENERAL_KNOWLEDGE
-                    "Entertainment: Books" -> category = ENTERTAINMENT_BOOKS
-                    "Entertainment: films" -> category = ENTERTAINMENT_FILMS
-                    "Entertainment: music" -> category = ENTERTAINMENT_MUSIC
-                    "Entertainment: musicals y theatres" -> category = ENTERTAINMENT_MUSICALS_AND_THEATRES
-                    "Entertainment: television" -> category = ENTERTAINMENT_TELEVISION
-                    "Entertainment: video games" -> category = ENTERTAINMENT_VIDEO_GAMES
-                    "Entertainment: board games" -> category = ENTERTAINMENT_BOARD_GAMES
-                    "Science and nature" -> category = SCIENCE_AND_NATURE
-                    "Science: Computers" -> category = SCIENCE_COMPUTERS
-                    "Science: mathematics" -> category = SCIENCE_MATHEMATICS
-                    "Mythology" -> category = MYTHOLOGY
-                    "Sports" -> category = SPORTS
-                    "Geography" -> category = GEOGRAPHY
-                    "History" -> category = HISTORY
-                    "Politics" -> category = POLITICS
-                    "Art" -> category = ART
-                    "Celebrities" -> category = CELEBRITIES
-                    "Animals" -> category = ANIMALS
-                    "Vehicles" -> category = VEHICLES
-                    "Entertainment: comics" -> category = ENTERTAINMENT_COMICS
-                    "Science: gadgets" -> category = SCIENCE_GADGETS
-                    "Entertainment: cartoon and animations" -> category = ENTERTAINMENT_CARTOON_AND_ANIMATIONS
-                    "Entertainment: japanese anime and manga" -> category = ENTERTAINMENT_JAPANESE_ANIME_AND_MANGA
+                when (parent?.getItemAtPosition(position)?.toString() ?: "") {
+                    "General Knowledge" -> category = GENERAL_KNOWLEDGE.valueInt
+                    "Entertainment: Books" -> category = ENTERTAINMENT_BOOKS.valueInt
+                    "Entertainment: films" -> category = ENTERTAINMENT_FILMS.valueInt
+                    "Entertainment: music" -> category = ENTERTAINMENT_MUSIC.valueInt
+                    "Entertainment: musicals y theatres" -> category = ENTERTAINMENT_MUSICALS_AND_THEATRES.valueInt
+                    "Entertainment: television" -> category = ENTERTAINMENT_TELEVISION.valueInt
+                    "Entertainment: video games" -> category = ENTERTAINMENT_VIDEO_GAMES.valueInt
+                    "Entertainment: board games" -> category = ENTERTAINMENT_BOARD_GAMES.valueInt
+                    "Science and nature" -> category = SCIENCE_AND_NATURE.valueInt
+                    "Science: Computers" -> category = SCIENCE_COMPUTERS.valueInt
+                    "Science: mathematics" -> category = SCIENCE_MATHEMATICS.valueInt
+                    "Mythology" -> category = MYTHOLOGY.valueInt
+                    "Sports" -> category = SPORTS.valueInt
+                    "Geography" -> category = GEOGRAPHY.valueInt
+                    "History" -> category = HISTORY.valueInt
+                    "Politics" -> category = POLITICS.valueInt
+                    "Art" -> category = ART.valueInt
+                    "Celebrities" -> category = CELEBRITIES.valueInt
+                    "Animals" -> category = ANIMALS.valueInt
+                    "Vehicles" -> category = VEHICLES.valueInt
+                    "Entertainment: comics" -> category = ENTERTAINMENT_COMICS.valueInt
+                    "Science: gadgets" -> category = SCIENCE_GADGETS.valueInt
+                    "Entertainment: cartoon and animations" -> category = ENTERTAINMENT_CARTOON_AND_ANIMATIONS.valueInt
+                    "Entertainment: japanese anime and manga" -> category = ENTERTAINMENT_JAPANESE_ANIME_AND_MANGA.valueInt
                 }
             }
 

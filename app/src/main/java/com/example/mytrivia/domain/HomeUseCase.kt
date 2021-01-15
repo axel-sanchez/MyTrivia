@@ -33,7 +33,7 @@ class HomeUseCase : KoinComponent {
                     newQuestions.value?.let {
                         if(it.isEmpty()) return null
                         val randomNum = Random().nextInt(it.size)
-                        addToDB(it)
+                        addQuestionToDataBase(it)
                         return it[randomNum]
                     }
                 }
@@ -44,14 +44,23 @@ class HomeUseCase : KoinComponent {
         }
     }
 
-    private suspend fun addToDB(questions: List<Response.Question?>) {
+    private suspend fun addQuestionToDataBase(questions: List<Response.Question?>) {
         for (question in questions) {
             try {
-                question?.category = Constants.categoryConverterToNumber(question?.category)
+                question?.category = getCategoryStringValue(question?.category)
                 question?.id = room.productDao().insertQuestion(question)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
+    }
+
+    private fun getCategoryStringValue(category: String?): String{
+        val categoriesEnumList = Constants.values()
+        val foundedCategory = categoriesEnumList.firstOrNull { it.valueString == category?:"" }
+        foundedCategory?.let {
+            return it.valueString
+        }
+        return ""
     }
 }

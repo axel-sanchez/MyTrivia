@@ -25,8 +25,6 @@ val moduleApp = module{
         .addConverterFactory(GsonConverterFactory.create())
         .build() }
     single { (get() as Retrofit).create(ApiService::class.java) }
-    single { HomeViewModel.HomeViewModelFactory(get()) }
-    single { QuestionViewModel.QuestionViewModelFactory(get()) }
     single { Room
         .databaseBuilder(androidContext(), Database::class.java, "myTriviaDB.db3")
         .build() }
