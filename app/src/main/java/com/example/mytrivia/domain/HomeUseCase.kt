@@ -23,7 +23,7 @@ class HomeUseCase : KoinComponent {
      */
     suspend fun getQuestion(category: Int, difficulty: String, type: String): Response.Question? {
         try {
-            var questions = room.productDao().getQuestions(category)
+            var questions = room.productDao().getQuestionsByCategory(category)
             questions?.let {
                 if (questions.isNotEmpty()) {
                     val randomNum = Random().nextInt(questions.size)

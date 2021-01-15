@@ -15,5 +15,5 @@ import com.example.mytrivia.data.models.Response
 )
 @TypeConverters(Converters::class)
 abstract class Database: RoomDatabase() {
-    abstract fun productDao(): ProductDao
+    abstract fun productDao(): QuestionDao
 }

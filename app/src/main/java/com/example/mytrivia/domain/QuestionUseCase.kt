@@ -17,6 +17,6 @@ class QuestionUseCase : KoinComponent {
      * @return devuelve un any
      */
     suspend fun getQuestionFromId(id: Long): Response.Question? {
-        return room.productDao().getQuestionFromId(id)
+        return room.productDao().getQuestionById(id)
     }
 }
